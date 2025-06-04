@@ -24,8 +24,8 @@ Each module can be expanded as development continues.
 cd backend
 python3 -m venv venv
 source venv/bin/activate
-pip install fastapi uvicorn pydantic
+pip install fastapi uvicorn sqlmodel
 uvicorn main:app --reload
 ```
 
-The backend now includes in-memory endpoints to create and list customers and visitors, ingest IoT data, and sync door access settings.
+The backend persists customer and visitor data to a local SQLite database (`codex.db`). It also provides endpoints to ingest IoT data and sync door access settings.

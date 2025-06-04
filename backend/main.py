@@ -1,6 +1,8 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException
 from typing import List
+from sqlmodel import Field, Session, SQLModel, select
+
+from database import init_db, get_session
 
 from iot_mqtt import MQTTClient
 
@@ -10,23 +12,26 @@ app = FastAPI(title="Codex Platform API")
 # connect to an MQTT broker (e.g., using paho-mqtt).
 mqtt_client = MQTTClient()
 
-class Customer(BaseModel):
-    id: int
+# Initialize SQLite database
+init_db()
+
+class Customer(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
     name: str
 
-class DoorAccessSyncRequest(BaseModel):
+class DoorAccessSyncRequest(SQLModel):
     controller_url: str
 
-class IoTData(BaseModel):
+class IoTData(SQLModel):
     device_id: str
     payload: dict
 
-class MQTTPublish(BaseModel):
+class MQTTPublish(SQLModel):
     topic: str
     payload: str
 
-class Visitor(BaseModel):
-    id: int
+class Visitor(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
     name: str
 
 @app.get("/")
@@ -34,18 +39,22 @@ def read_root():
     return {"message": "Codex backend API"}
 
 # --- Customer Module ---
-fake_customers: List[Customer] = []
 door_access_sync_state = {}
 
 @app.get("/customers", response_model=List[Customer])
 def list_customers():
-    """Return all customers (in-memory placeholder)."""
-    return fake_customers
+    """Return all customers from the database."""
+    with get_session() as session:
+        customers = session.exec(select(Customer)).all()
+        return customers
 
 @app.post("/customers", response_model=Customer)
 def create_customer(customer: Customer):
-    fake_customers.append(customer)
-    return customer
+    with get_session() as session:
+        session.add(customer)
+        session.commit()
+        session.refresh(customer)
+        return customer
 
 # --- Door Access Control Module ---
 @app.get("/door-access")
@@ -82,14 +91,18 @@ def list_iot_messages():
     return mqtt_client.messages
 
 # --- Visitor Registration Module ---
-fake_visitors: List[Visitor] = []
 
 @app.get("/visitors", response_model=List[Visitor])
 def list_visitors():
-    """Return all visitors (in-memory placeholder)."""
-    return fake_visitors
+    """Return all visitors from the database."""
+    with get_session() as session:
+        visitors = session.exec(select(Visitor)).all()
+        return visitors
 
 @app.post("/visitors", response_model=Visitor)
 def create_visitor(visitor: Visitor):
-    fake_visitors.append(visitor)
-    return visitor
+    with get_session() as session:
+        session.add(visitor)
+        session.commit()
+        session.refresh(visitor)
+        return visitor

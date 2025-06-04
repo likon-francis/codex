@@ -20,9 +20,10 @@ This is a minimal FastAPI backend exposing placeholder endpoints for each module
    ```
 2. Install dependencies:
    ```bash
-   pip install fastapi uvicorn
+   pip install fastapi uvicorn sqlmodel
    ```
-3. Run the development server:
+3. Run the development server (this will create a local SQLite
+   database `codex.db` on first run):
    ```bash
    uvicorn main:app --reload
    ```
