@@ -7,6 +7,10 @@ This repository contains a simple skeleton for a multi-module platform. Modules 
 - **IoT Module**: receive IoT signals via API or MQTT
 - **Visitor Registration Module**
 
+The IoT module now exposes simple MQTT helper endpoints so that external
+vendors can push messages to the system. Door access synchronization state is
+tracked in-memory for demonstration purposes.
+
 ## Structure
 
 - `backend/` – FastAPI backend exposing module endpoints

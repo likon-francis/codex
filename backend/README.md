@@ -7,6 +7,8 @@ This is a minimal FastAPI backend exposing placeholder endpoints for each module
 - `/door-access/sync` – sync with local controller (`POST`)
 - `/iot` – IoT device management (`GET`)
 - `/iot/data` – ingest IoT signals (`POST`)
+- `/iot/mqtt` – publish an MQTT message (`POST`)
+- `/iot/mqtt/messages` – list received MQTT messages (`GET`)
 - `/visitors` – visitor registration (`GET`/`POST`)
 
 ## Development
