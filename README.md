@@ -1,2 +1,27 @@
-# codex
-this is for codex
+# Codex Platform
+
+This repository contains a simple skeleton for a multi-module platform. Modules include:
+
+- **Customer Module**: customer profile management
+- **Door Access Control Module**: manage door hardware and settings
+- **IoT Module**: receive IoT signals via API or MQTT
+- **Visitor Registration Module**
+
+## Structure
+
+- `backend/` – FastAPI backend exposing module endpoints
+- `frontend/` – React placeholder app
+
+Each module can be expanded as development continues.
+
+## Running the Backend
+
+```bash
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install fastapi uvicorn pydantic
+uvicorn main:app --reload
+```
+
+The backend now includes in-memory endpoints to create and list customers and visitors, ingest IoT data, and sync door access settings.
