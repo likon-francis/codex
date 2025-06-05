@@ -85,19 +85,18 @@ function App() {
           />
         </div>
         <div style={{ marginBottom: '0.5rem' }}>
-          <input
-            type="text"
-            list="preset-list"
-            placeholder="Analysis type (optional)"
+          <select
             value={analysisType}
             onChange={(e) => setAnalysisType(e.target.value)}
             style={{ width: '20rem' }}
-          />
-          <datalist id="preset-list">
+          >
+            <option value="">Select analysis type (optional)</option>
             {presets.map((p) => (
-              <option key={p.type} value={p.type} />
+              <option key={p.type} value={p.type}>
+                {p.type}
+              </option>
             ))}
-          </datalist>
+          </select>
         </div>
         <div style={{ marginBottom: '0.5rem' }}>
           <textarea

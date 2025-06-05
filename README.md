@@ -3,8 +3,9 @@
 
 The Document Analyzer accepts PDF, Word or text files. A small React portal in
 `frontend/` lets you select the backend URL, upload a document with an optional
-prompt and analysis type, then view the returned analysis. The `analysis_type`
-may be `cv` or `tender` to apply built-in system prompts (available via the new
+prompt and choose the analysis type from a dropdown list, then view the returned
+analysis. The `analysis_type` may be `cv` or `tender` to apply built-in system
+prompts (available via the new
 `/analysis-presets` endpoint). Uploaded files are written to an `uploads/`
 directory on the backend and results are stored in the same SQLite database that
 holds customer and visitor records, including a timestamp for when each upload

@@ -12,6 +12,7 @@ item is marked with its current status.
 | Provide `/analysis-presets` endpoint listing built-in prompts | **Done** |
 | Extract text from PDF, Word and plain text files | **Done** |
 | React portal to choose backend URL, upload files, choose analysis type, prompt and view results | **Done** |
+| Change analysis type input to a dropdown populated from presets | **Done** |
 | Fetch preset analysis types for suggestions in the portal | **Done** |
 | List previously analyzed documents with timestamps | **Done** |
 | Persist OpenRouter API key via environment variable `OPENROUTER_API_KEY` | **Done** |
