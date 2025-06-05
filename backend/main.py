@@ -1,10 +1,12 @@
-from fastapi import FastAPI, HTTPException
-from typing import List
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form
+from typing import List, Optional
 from sqlmodel import Field, Session, SQLModel, select
 
 from database import init_db, get_session
+import os
 
 from iot_mqtt import MQTTClient
+from analyzer import extract_text, analyze_text
 
 app = FastAPI(title="Codex Platform API")
 
@@ -15,6 +17,8 @@ mqtt_client = MQTTClient()
 # Initialize SQLite database
 init_db()
 
+UPLOAD_DIR = "uploads"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 class Customer(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str
@@ -33,6 +37,14 @@ class MQTTPublish(SQLModel):
 class Visitor(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str
+
+class Document(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    filename: str
+    path: str
+    prompt: Optional[str] = None
+    analysis_type: Optional[str] = None
+    result: Optional[str] = None
 
 @app.get("/")
 def read_root():
@@ -89,6 +101,38 @@ def publish_iot_message(msg: MQTTPublish):
 def list_iot_messages():
     """Return MQTT messages received via the placeholder client."""
     return mqtt_client.messages
+# --- Document Analyzer Module ---
+@app.post("/analyze", response_model=Document)
+async def analyze_document(
+    file: UploadFile = File(...),
+    prompt: str = Form(""),
+    analysis_type: str = Form(""),
+):
+    data = await file.read()
+    text = extract_text(data, file.filename)
+    result = analyze_text(prompt, text, analysis_type or None)
+    path = os.path.join(UPLOAD_DIR, file.filename)
+    with open(path, "wb") as f:
+        f.write(data)
+    doc = Document(
+        filename=file.filename,
+        path=path,
+        prompt=prompt or None,
+        analysis_type=analysis_type or None,
+        result=result,
+    )
+    with get_session() as session:
+        session.add(doc)
+        session.commit()
+        session.refresh(doc)
+        return doc
+
+@app.get("/documents", response_model=List[Document])
+def list_documents():
+    with get_session() as session:
+        docs = session.exec(select(Document)).all()
+        return docs
+
 
 # --- Visitor Registration Module ---
 
