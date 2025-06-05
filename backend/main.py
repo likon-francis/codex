@@ -43,6 +43,7 @@ class Document(SQLModel, table=True):
     filename: str
     path: str
     prompt: Optional[str] = None
+
     result: Optional[str] = None
 
 @app.get("/")
@@ -102,14 +103,7 @@ def list_iot_messages():
     return mqtt_client.messages
 # --- Document Analyzer Module ---
 @app.post("/analyze", response_model=Document)
-async def analyze_document(file: UploadFile = File(...), prompt: str = Form("")):
-    data = await file.read()
-    text = extract_text(data)
-    result = analyze_text(prompt, text)
-    path = os.path.join(UPLOAD_DIR, file.filename)
-    with open(path, "wb") as f:
-        f.write(data)
-    doc = Document(filename=file.filename, path=path, prompt=prompt, result=result)
+
     with get_session() as session:
         session.add(doc)
         session.commit()
