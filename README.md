@@ -1,11 +1,4 @@
 # Codex Platform
-
-This repository contains a simple skeleton for a multi-module platform. Modules include:
-
-- **Customer Module**: customer profile management
-- **Door Access Control Module**: manage door hardware and settings
-- **IoT Module**: receive IoT signals via API or MQTT
-- **Visitor Registration Module**
 - **Document Analyzer Module**: upload and analyze files via OpenRouter
 
 The Document Analyzer accepts PDF, Word or text files. A small React portal in
@@ -58,3 +51,4 @@ cd frontend
 npm install
 npm run start
 ```
+

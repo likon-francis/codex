@@ -27,6 +27,7 @@ Authentication is handled with HTTP Basic credentials. Create an account via
 `/signup` and include your username and password when calling analyzer
 endpoints.
 
+
 ## Development
 
 1. Create and activate a virtual environment:
