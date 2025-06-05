@@ -3,10 +3,33 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "jest-environment-jsdom": "^30.0.0-beta.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
+  "devDependencies": {
+    "@babel/preset-env": "^7.22.15",
+    "@babel/preset-react": "^7.22.5",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "babel-jest": "^29.0.0",
+    "jest": "^29.0.0",
+    "parcel": "^2.8.3"
+  },
   "scripts": {
-    "start": "echo 'Run your React dev server here'"
+    "start": "parcel public/index.html --port 3000 --open false",
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    }
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ]
   }
 }

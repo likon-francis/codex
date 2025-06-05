@@ -15,8 +15,18 @@ This is a minimal FastAPI backend exposing placeholder endpoints for each module
   default system prompts.
 - `/documents` - list analyzed documents
 
+- `/documents/{id}` - retrieve a single document
+- `/analysis-presets` - list available preset analysis types
+- `/signup` - create a user account
+- `/me` - return the authenticated user
+
 The analyzer extracts text from PDF and Word documents using PyPDF2 and
-python-docx.
+python-docx. Each stored record captures the filename, analysis type,
+prompt, result and the time the file was processed.
+
+Authentication is handled with HTTP Basic credentials. Create an account via
+`/signup` and include your username and password when calling analyzer
+endpoints.
 
 
 ## Development
@@ -28,10 +38,7 @@ python-docx.
    ```
 2. Install dependencies:
    ```bash
-
    pip install fastapi uvicorn sqlmodel requests PyPDF2 python-docx
-
-
 
    ```
 3. Run the development server (this will create a local SQLite

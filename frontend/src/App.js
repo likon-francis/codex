@@ -1,5 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
+
 
 /**
  * Simple document analyzer portal. Allows selecting a backend URL,
@@ -16,6 +16,8 @@ function App() {
   const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false);
   const [documents, setDocuments] = useState([]);
+  const [presets, setPresets] = useState([]);
+
 
   const loadDocuments = async () => {
     try {
@@ -29,8 +31,17 @@ function App() {
 
   useEffect(() => {
     loadDocuments();
+    const loadPresets = async () => {
+      try {
+        const res = await fetch(`${baseUrl}/analysis-presets`);
+        const data = await res.json();
+        setPresets(data);
+      } catch {
+        setPresets([]);
+      }
+    };
+    loadPresets();
   }, [baseUrl]);
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,7 +50,6 @@ function App() {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('prompt', prompt);
-
     formData.append('analysis_type', analysisType);
 
     try {
@@ -80,14 +90,20 @@ function App() {
           />
         </div>
         <div style={{ marginBottom: '0.5rem' }}>
-
           <input
             type="text"
+            list="preset-list"
+
             placeholder="Analysis type (optional)"
             value={analysisType}
             onChange={(e) => setAnalysisType(e.target.value)}
             style={{ width: '20rem' }}
           />
+          <datalist id="preset-list">
+            {presets.map((p) => (
+              <option key={p.type} value={p.type} />
+            ))}
+          </datalist>
         </div>
         <div style={{ marginBottom: '0.5rem' }}>
 
@@ -119,12 +135,13 @@ function App() {
         <ul>
           {documents.map((doc) => (
             <li key={doc.id} style={{ marginBottom: '0.25rem' }}>
-              {doc.filename}: {doc.analysis_type || 'N/A'}
+              {doc.filename} ({doc.analysis_type || 'N/A'}) -{' '}
+              {doc.created_at && new Date(doc.created_at).toLocaleString()}
+
             </li>
           ))}
         </ul>
       </div>
-
     </div>
   );
 }
