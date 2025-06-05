@@ -1,24 +1,4 @@
-
-  const [presets, setPresets] = useState([]);
-    const loadPresets = async () => {
-      try {
-        const res = await fetch(`${baseUrl}/analysis-presets`);
-        const data = await res.json();
-        setPresets(data);
-      } catch {
-        setPresets([]);
-      }
-    };
-    loadPresets();
-            list="preset-list"
-          <datalist id="preset-list">
-            {presets.map((p) => (
-              <option key={p.type} value={p.type} />
-            ))}
-          </datalist>
-              {doc.filename} ({doc.analysis_type || 'N/A'}) -{' '}
-              {doc.created_at && new Date(doc.created_at).toLocaleString()}
-
+import React, { useState, useEffect } from 'react';
 /**
  * Simple document analyzer portal. Allows selecting a backend URL,
  * uploading a document with an optional prompt and analysis type,
@@ -104,19 +84,18 @@ function App() {
           />
         </div>
         <div style={{ marginBottom: '0.5rem' }}>
-          <input
-            type="text"
-            list="preset-list"
-            placeholder="Analysis type (optional)"
+          <select
             value={analysisType}
             onChange={(e) => setAnalysisType(e.target.value)}
             style={{ width: '20rem' }}
-          />
-          <datalist id="preset-list">
+          >
+            <option value="">Select analysis type (optional)</option>
             {presets.map((p) => (
-              <option key={p.type} value={p.type} />
+              <option key={p.type} value={p.type}>
+                {p.type}
+              </option>
             ))}
-          </datalist>
+          </select>
         </div>
         <div style={{ marginBottom: '0.5rem' }}>
           <textarea
