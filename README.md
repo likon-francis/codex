@@ -10,11 +10,13 @@
 The Document Analyzer accepts PDF, Word or text files. A small React portal in
 `frontend/` lets you select the backend URL, upload a document with an optional
 prompt and analysis type, then view the returned analysis. The `analysis_type`
-may be `cv` or `tender` to apply built-in system prompts. Uploaded files are
-written to an `uploads/` directory on the backend and results are stored in the
-same SQLite database that holds customer and visitor records. Text extraction is
-handled using **PyPDF2** and **python-docx**. The OpenRouter API key is read from
-the `OPENROUTER_API_KEY` environment variable or the default in
+may be `cv` or `tender` to apply built-in system prompts (available via the new
+`/analysis-presets` endpoint). Uploaded files are written to an `uploads/`
+directory on the backend and results are stored in the same SQLite database that
+holds customer and visitor records, including a timestamp for when each upload
+was analyzed. Text extraction is handled using **PyPDF2**
+and **python-docx**. The OpenRouter API key is read from the
+`OPENROUTER_API_KEY` environment variable or the default in
 `backend/analyzer.py`.
 
 The IoT module now exposes simple MQTT helper endpoints so that external
@@ -39,7 +41,7 @@ uvicorn main:app --reload
 ```
 
 The backend persists customer and visitor data to a local SQLite database (`codex.db`). It also provides endpoints to ingest IoT data and sync door access settings.
-The Document Analyzer module exposes `/analyze` for uploading files and `/documents` to list past analyses.
+The Document Analyzer module exposes `/analyze` for uploading files, `/documents` to list past analyses, `/documents/{id}` to retrieve a single result, and `/analysis-presets` to view built-in analysis types.
 
 ## Running the Frontend
 

@@ -1,5 +1,23 @@
 
-import React, { useState, useEffect } from 'react';
+  const [presets, setPresets] = useState([]);
+    const loadPresets = async () => {
+      try {
+        const res = await fetch(`${baseUrl}/analysis-presets`);
+        const data = await res.json();
+        setPresets(data);
+      } catch {
+        setPresets([]);
+      }
+    };
+    loadPresets();
+            list="preset-list"
+          <datalist id="preset-list">
+            {presets.map((p) => (
+              <option key={p.type} value={p.type} />
+            ))}
+          </datalist>
+              {doc.filename} ({doc.analysis_type || 'N/A'}) -{' '}
+              {doc.created_at && new Date(doc.created_at).toLocaleString()}
 
 /**
  * Simple document analyzer portal. Allows selecting a backend URL,

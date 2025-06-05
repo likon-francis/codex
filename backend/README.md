@@ -14,9 +14,12 @@ This is a minimal FastAPI backend exposing placeholder endpoints for each module
   optional `analysis_type`). `analysis_type` may be `cv` or `tender` to use
   default system prompts.
 - `/documents` - list analyzed documents
+- `/documents/{id}` - retrieve a single document
+- `/analysis-presets` - list available preset analysis types
 
 The analyzer extracts text from PDF and Word documents using PyPDF2 and
-python-docx.
+python-docx. Each stored record captures the filename, analysis type,
+prompt, result and the time the file was processed.
 
 
 ## Development

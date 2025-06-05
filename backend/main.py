@@ -1,12 +1,13 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from typing import List, Optional
+from datetime import datetime
 from sqlmodel import Field, Session, SQLModel, select
 
 from database import init_db, get_session
 import os
 
 from iot_mqtt import MQTTClient
-from analyzer import extract_text, analyze_text
+from analyzer import extract_text, analyze_text, list_presets
 
 app = FastAPI(title="Codex Platform API")
 
@@ -42,6 +43,7 @@ class Document(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     filename: str
     path: str
+    created_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
     prompt: Optional[str] = None
     analysis_type: Optional[str] = None
     result: Optional[str] = None
@@ -109,6 +111,20 @@ async def analyze_document(
     prompt: str = Form(""),
     analysis_type: str = Form(""),
 ):
+@app.get("/documents/{doc_id}", response_model=Document)
+def get_document(doc_id: int):
+    with get_session() as session:
+        doc = session.get(Document, doc_id)
+        if not doc:
+            raise HTTPException(status_code=404, detail="Document not found")
+        return doc
+
+
+@app.get("/analysis-presets")
+def get_analysis_presets():
+    return list_presets()
+
+
     data = await file.read()
     text = extract_text(data, file.filename)
     result = analyze_text(prompt, text, analysis_type or None)
