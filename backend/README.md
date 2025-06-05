@@ -22,6 +22,7 @@ python-docx. Each stored record captures the filename, analysis type,
 prompt, result and the time the file was processed.
 
 
+
 ## Development
 
 1. Create and activate a virtual environment:
@@ -31,11 +32,7 @@ prompt, result and the time the file was processed.
    ```
 2. Install dependencies:
    ```bash
-
    pip install fastapi uvicorn sqlmodel requests PyPDF2 python-docx
-
-
-
    ```
 3. Run the development server (this will create a local SQLite
    database `codex.db` on first run):

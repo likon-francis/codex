@@ -1,10 +1,4 @@
 # Codex Platform
-
-
-- **Customer Module**: customer profile management
-- **Door Access Control Module**: manage door hardware and settings
-- **IoT Module**: receive IoT signals via API or MQTT
-- **Visitor Registration Module**
 - **Document Analyzer Module**: upload and analyze files via OpenRouter
 
 The Document Analyzer accepts PDF, Word or text files. A small React portal in
@@ -18,6 +12,10 @@ was analyzed. Text extraction is handled using **PyPDF2**
 and **python-docx**. The OpenRouter API key is read from the
 `OPENROUTER_API_KEY` environment variable or the default in
 `backend/analyzer.py`.
+
+Authentication is handled with simple HTTP Basic credentials. Create a user via
+`POST /signup` then include your username and password with requests to the
+analyzer endpoints.
 
 The IoT module now exposes simple MQTT helper endpoints so that external
 vendors can push messages to the system. Door access synchronization state is
@@ -45,13 +43,12 @@ The Document Analyzer module exposes `/analyze` for uploading files, `/documents
 
 ## Running the Frontend
 
-The frontend is a minimal React app. Install dependencies with `npm install` and
-start your preferred development server:
+The frontend is a minimal React app using Parcel for development. Install
+dependencies with `npm install` and start the dev server:
 
 ```bash
 cd frontend
 npm install
 npm run start
 ```
-=======
 

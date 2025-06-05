@@ -1,5 +1,4 @@
 import os
-
 from io import BytesIO
 import requests
 
@@ -33,6 +32,13 @@ ANALYSIS_PRESETS = {
         "summarise requirements."
     ),
 }
+
+
+def list_presets() -> list[dict]:
+    """Return available analysis types and their system prompts."""
+    return [
+        {"type": k, "prompt": v} for k, v in ANALYSIS_PRESETS.items()
+    ]
 
 
 def extract_text(data: bytes, filename: str) -> str:
@@ -69,9 +75,13 @@ def analyze_text(prompt: str, text: str, analysis_type: str | None = None) -> st
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": f"{prompt}\n\n{text}"},
         ],
-
     }
-    response = requests.post(OPENROUTER_URL, headers=headers, json=payload, timeout=30)
-    response.raise_for_status()
-    result = response.json()
-    return result.get("choices", [{}])[0].get("message", {}).get("content", "")
+    try:
+        response = requests.post(
+            OPENROUTER_URL, headers=headers, json=payload, timeout=30
+        )
+        response.raise_for_status()
+        result = response.json()
+        return result.get("choices", [{}])[0].get("message", {}).get("content", "")
+    except Exception as exc:
+        raise RuntimeError("Failed to call analysis service") from exc
