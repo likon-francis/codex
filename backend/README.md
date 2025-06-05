@@ -14,7 +14,6 @@ This is a minimal FastAPI backend exposing placeholder endpoints for each module
   optional `analysis_type`). `analysis_type` may be `cv` or `tender` to use
   default system prompts.
 - `/documents` - list analyzed documents
-
 - `/documents/{id}` - retrieve a single document
 - `/analysis-presets` - list available preset analysis types
 - `/signup` - create a user account
@@ -39,7 +38,6 @@ endpoints.
 2. Install dependencies:
    ```bash
    pip install fastapi uvicorn sqlmodel requests PyPDF2 python-docx
-
    ```
 3. Run the development server (this will create a local SQLite
    database `codex.db` on first run):

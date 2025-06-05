@@ -7,7 +7,6 @@ fetched from the backend via `/analysis-presets` and offered as suggestions.
 
 Run the app in development mode using Parcel:
 
-
 ```bash
 npm install
 npm run start
