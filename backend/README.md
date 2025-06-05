@@ -10,12 +10,7 @@ This is a minimal FastAPI backend exposing placeholder endpoints for each module
 - `/iot/mqtt` – publish an MQTT message (`POST`)
 - `/iot/mqtt/messages` – list received MQTT messages (`GET`)
 - `/visitors` – visitor registration (`GET`/`POST`)
-- `/analyze` - upload a document and return analysis (fields `file`, `prompt`,
-  optional `analysis_type`)
-- `/documents` - list analyzed documents
 
-The analyzer extracts text from PDF and Word documents using PyPDF2 and
-python-docx.
 
 ## Development
 
@@ -26,7 +21,7 @@ python-docx.
    ```
 2. Install dependencies:
    ```bash
-   pip install fastapi uvicorn sqlmodel requests PyPDF2 python-docx
+
    ```
 3. Run the development server (this will create a local SQLite
    database `codex.db` on first run):

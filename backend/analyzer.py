@@ -1,32 +1,5 @@
 import os
-from io import BytesIO
-import requests
 
-from PyPDF2 import PdfReader
-from docx import Document as DocxDocument
-
-OPENROUTER_API_KEY = os.getenv(
-    "OPENROUTER_API_KEY",
-    "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",
-)
-OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
-
-
-def extract_text(data: bytes, filename: str) -> str:
-    """Return plain text from uploaded file data."""
-    ext = os.path.splitext(filename)[1].lower()
-    if ext == ".pdf":
-        try:
-            reader = PdfReader(BytesIO(data))
-            return "\n".join(page.extract_text() or "" for page in reader.pages)
-        except Exception:
-            pass
-    elif ext in {".doc", ".docx"}:
-        try:
-            doc = DocxDocument(BytesIO(data))
-            return "\n".join(p.text for p in doc.paragraphs)
-        except Exception:
-            pass
     return data.decode("utf-8", errors="ignore")
 
 
