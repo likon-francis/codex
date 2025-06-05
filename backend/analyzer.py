@@ -1,4 +1,5 @@
 import os
+
 from io import BytesIO
 import requests
 
@@ -32,6 +33,7 @@ def list_presets() -> list[dict]:
     return [
         {"type": k, "prompt": v} for k, v in ANALYSIS_PRESETS.items()
     ]
+
 
 
 def extract_text(data: bytes, filename: str) -> str:
@@ -78,3 +80,4 @@ def analyze_text(prompt: str, text: str, analysis_type: str | None = None) -> st
         return result.get("choices", [{}])[0].get("message", {}).get("content", "")
     except Exception as exc:
         raise RuntimeError("Failed to call analysis service") from exc
+

@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
 
+
 /**
  * Simple document analyzer portal. Allows selecting a backend URL,
  * uploading a document with an optional prompt and analysis type,
  * then viewing the returned analysis.
+
  */
 function App() {
   const [baseUrl, setBaseUrl] = useState('http://localhost:8000');
   const [file, setFile] = useState(null);
   const [prompt, setPrompt] = useState('');
+
   const [analysisType, setAnalysisType] = useState('');
   const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false);
   const [documents, setDocuments] = useState([]);
   const [presets, setPresets] = useState([]);
+
 
   const loadDocuments = async () => {
     try {
@@ -47,6 +51,7 @@ function App() {
     formData.append('file', file);
     formData.append('prompt', prompt);
     formData.append('analysis_type', analysisType);
+
     try {
       const res = await fetch(`${baseUrl}/analyze`, {
         method: 'POST',
@@ -88,6 +93,7 @@ function App() {
           <input
             type="text"
             list="preset-list"
+
             placeholder="Analysis type (optional)"
             value={analysisType}
             onChange={(e) => setAnalysisType(e.target.value)}
@@ -100,6 +106,7 @@ function App() {
           </datalist>
         </div>
         <div style={{ marginBottom: '0.5rem' }}>
+
           <textarea
             placeholder="Optional prompt"
             value={prompt}
@@ -119,6 +126,7 @@ function App() {
         </div>
       )}
 
+
       <div style={{ marginTop: '2rem' }}>
         <h3>Previous Documents</h3>
         <button type="button" onClick={loadDocuments} style={{ marginBottom: '0.5rem' }}>
@@ -129,6 +137,7 @@ function App() {
             <li key={doc.id} style={{ marginBottom: '0.25rem' }}>
               {doc.filename} ({doc.analysis_type || 'N/A'}) -{' '}
               {doc.created_at && new Date(doc.created_at).toLocaleString()}
+
             </li>
           ))}
         </ul>

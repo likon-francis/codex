@@ -3,6 +3,7 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from typing import List, Optional
 import secrets
 from datetime import datetime
+
 from sqlmodel import Field, Session, SQLModel, select
 
 from database import init_db, get_session
@@ -10,6 +11,7 @@ import os
 
 from iot_mqtt import MQTTClient
 from analyzer import extract_text, analyze_text, list_presets
+
 
 app = FastAPI(title="Codex Platform API")
 
@@ -29,6 +31,7 @@ class User(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     username: str
     password: str
+
 class Customer(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str
@@ -53,10 +56,10 @@ class Document(SQLModel, table=True):
     filename: str
     path: str
     created_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+
     prompt: Optional[str] = None
     analysis_type: Optional[str] = None
     result: Optional[str] = None
-
 
 def get_current_user(credentials: HTTPBasicCredentials = Depends(security)) -> User:
     """Simple HTTP Basic auth."""
@@ -66,6 +69,7 @@ def get_current_user(credentials: HTTPBasicCredentials = Depends(security)) -> U
         if not user or not secrets.compare_digest(user.password, credentials.password):
             raise HTTPException(status_code=401, detail="Invalid credentials")
         return user
+
 
 @app.get("/")
 def read_root():
@@ -138,6 +142,7 @@ def list_iot_messages():
     return mqtt_client.messages
 # --- Document Analyzer Module ---
 @app.post("/analyze", response_model=Document)
+
 async def analyze_document(
     file: UploadFile = File(...),
     prompt: str = Form(""),
@@ -153,6 +158,7 @@ async def analyze_document(
         result = analyze_text(prompt, text, analysis_type or None)
     except Exception:
         raise HTTPException(status_code=502, detail="Analysis service failure")
+
     path = os.path.join(UPLOAD_DIR, file.filename)
     with open(path, "wb") as f:
         f.write(data)
@@ -163,6 +169,7 @@ async def analyze_document(
         analysis_type=analysis_type or None,
         result=result,
     )
+
     with get_session() as session:
         session.add(doc)
         session.commit()
@@ -171,6 +178,7 @@ async def analyze_document(
 
 @app.get("/documents", response_model=List[Document])
 def list_documents(current_user: User = Depends(get_current_user)):
+
     with get_session() as session:
         docs = session.exec(select(Document)).all()
         return docs
@@ -188,6 +196,7 @@ def get_document(doc_id: int, current_user: User = Depends(get_current_user)):
 @app.get("/analysis-presets")
 def get_analysis_presets():
     return list_presets()
+
 
 
 # --- Visitor Registration Module ---
