@@ -2,6 +2,13 @@ import os
 from io import BytesIO
 import requests
 
+def list_presets() -> list[dict]:
+    """Return available analysis types and their system prompts."""
+    return [
+        {"type": k, "prompt": v} for k, v in ANALYSIS_PRESETS.items()
+    ]
+
+
 from PyPDF2 import PdfReader
 from docx import Document as DocxDocument
 

@@ -1,7 +1,6 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from typing import List, Optional
-import secrets
 from datetime import datetime
 from sqlmodel import Field, Session, SQLModel, select
 
@@ -143,9 +142,21 @@ async def analyze_document(
     analysis_type: str = Form(""),
     current_user: User = Depends(get_current_user),
 ):
-    ext = os.path.splitext(file.filename)[1].lower()
-    if ext not in {".pdf", ".doc", ".docx", ".txt"}:
-        raise HTTPException(status_code=400, detail="Unsupported file type")
+
+@app.get("/documents/{doc_id}", response_model=Document)
+def get_document(doc_id: int):
+    with get_session() as session:
+        doc = session.get(Document, doc_id)
+        if not doc:
+            raise HTTPException(status_code=404, detail="Document not found")
+        return doc
+
+
+@app.get("/analysis-presets")
+def get_analysis_presets():
+    return list_presets()
+
+
     data = await file.read()
     text = extract_text(data, file.filename)
     try:
