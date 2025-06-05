@@ -103,6 +103,7 @@ def list_iot_messages():
     return mqtt_client.messages
 # --- Document Analyzer Module ---
 @app.post("/analyze", response_model=Document)
+
 async def analyze_document(
     file: UploadFile = File(...),
     prompt: str = Form(""),
@@ -121,6 +122,7 @@ async def analyze_document(
         analysis_type=analysis_type or None,
         result=result,
     )
+
     with get_session() as session:
         session.add(doc)
         session.commit()

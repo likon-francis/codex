@@ -2,7 +2,9 @@
 
 This React app provides a small portal for uploading documents to the backend
 analyzer. Enter the backend URL, choose a file, optionally supply a prompt and
+
 analysis type, and view the returned analysis.
+
 
 Run the app in development mode:
 

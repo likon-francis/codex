@@ -1,4 +1,5 @@
 import os
+
 from io import BytesIO
 import requests
 
@@ -61,6 +62,7 @@ def analyze_text(prompt: str, text: str, analysis_type: str | None = None) -> st
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": f"{prompt}\n\n{text}"},
         ],
+
     }
     response = requests.post(OPENROUTER_URL, headers=headers, json=payload, timeout=30)
     response.raise_for_status()

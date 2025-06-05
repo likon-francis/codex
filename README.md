@@ -1,6 +1,5 @@
 # Codex Platform
 
-This repository contains a simple skeleton for a multi-module platform. Modules include:
 
 - **Customer Module**: customer profile management
 - **Door Access Control Module**: manage door hardware and settings
@@ -52,3 +51,5 @@ cd frontend
 npm install
 npm run start
 ```
+=======
+

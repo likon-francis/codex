@@ -18,6 +18,7 @@ This is a minimal FastAPI backend exposing placeholder endpoints for each module
 The analyzer extracts text from PDF and Word documents using PyPDF2 and
 python-docx.
 
+
 ## Development
 
 1. Create and activate a virtual environment:
@@ -27,7 +28,11 @@ python-docx.
    ```
 2. Install dependencies:
    ```bash
+
    pip install fastapi uvicorn sqlmodel requests PyPDF2 python-docx
+
+
+
    ```
 3. Run the development server (this will create a local SQLite
    database `codex.db` on first run):
