@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+venv/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/.parcel-cache/
+
+# Misc
+uploads/
+frontend/package-lock.json
