@@ -57,7 +57,6 @@ class Document(SQLModel, table=True):
     analysis_type: Optional[str] = None
     result: Optional[str] = None
 
-
 def get_current_user(credentials: HTTPBasicCredentials = Depends(security)) -> User:
     """Simple HTTP Basic auth."""
     with get_session() as session:

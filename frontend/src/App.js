@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 /**
  * Simple document analyzer portal. Allows selecting a backend URL,
  * uploading a document with an optional prompt and analysis type,
