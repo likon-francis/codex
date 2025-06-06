@@ -14,6 +14,7 @@ Enter the backend URL, drop your files, optionally select a prompt template or
 edit the prompt, choose the analysis type or enable auto detection and then view
 the returned analysis.
 
+
 Run the app in development mode using Parcel:
 
 ```bash

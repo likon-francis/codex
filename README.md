@@ -1,5 +1,4 @@
 # Codex Platform
-
 This repository contains a simple skeleton for a multi-module platform. Modules include:
 
 - **Customer Module**: customer profile management
@@ -27,6 +26,25 @@ database that holds customer and visitor records, including a timestamp for when
 each upload was analyzed. Text extraction is handled using **PyPDF2** and
 **python-docx**. The OpenRouter API key is read from the `OPENROUTER_API_KEY`
 environment variable or the default in `backend/analyzer.py`.
+
+Authentication is handled with simple HTTP Basic credentials. Create a user via
+`POST /signup` then include your username and password with requests to the
+analyzer endpoints.
+
+- **Document Analyzer Module**: upload and analyze files via OpenRouter
+
+The Document Analyzer accepts PDF, Word or text files. A small React portal in
+`frontend/` lets you select the backend URL, upload a document with an optional
+prompt and choose the analysis type from a dropdown list, then view the returned
+analysis. The `analysis_type` may be `cv` or `tender` to apply built-in system
+prompts (available via the new
+`/analysis-presets` endpoint). Uploaded files are written to an `uploads/`
+directory on the backend and results are stored in the same SQLite database that
+holds customer and visitor records, including a timestamp for when each upload
+was analyzed. Text extraction is handled using **PyPDF2**
+and **python-docx**. The OpenRouter API key is read from the
+`OPENROUTER_API_KEY` environment variable or the default in
+`backend/analyzer.py`.
 
 Authentication is handled with simple HTTP Basic credentials. Create a user via
 `POST /signup` then include your username and password with requests to the

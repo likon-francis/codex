@@ -57,7 +57,6 @@ class Document(SQLModel, table=True):
     analysis_type: Optional[str] = None
     result: Optional[str] = None
 
-
 def get_current_user(credentials: HTTPBasicCredentials = Depends(security)) -> User:
     """Simple HTTP Basic auth."""
     with get_session() as session:
@@ -142,7 +141,6 @@ async def analyze_document(
     file: UploadFile = File(...),
     prompt: str = Form(""),
     analysis_type: str = Form(""),
-    detect_type: bool = Form(False),
     current_user: User = Depends(get_current_user),
 ):
     ext = os.path.splitext(file.filename)[1].lower()
@@ -157,6 +155,7 @@ async def analyze_document(
             analysis_type = "cv"
         elif "tender" in lower_fn or "tender" in lower_text:
             analysis_type = "tender"
+
     try:
         result = analyze_text(prompt, text, analysis_type or None)
     except Exception:

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+
 /**
  * Simple document analyzer portal. Allows selecting a backend URL,
  * uploading a document with an optional prompt and analysis type,
@@ -15,6 +16,7 @@ function App() {
   const [documents, setDocuments] = useState([]);
   const [presets, setPresets] = useState([]);
   const inputRef = useRef();
+
 
   const loadDocuments = async () => {
     try {
@@ -143,6 +145,7 @@ function App() {
             />
             Auto detect
           </label>
+
         </div>
         <div style={{ marginBottom: '0.5rem' }}>
           <textarea

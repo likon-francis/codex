@@ -28,3 +28,4 @@ item is marked with its current status.
 | Status tracker displaying queue/analysis/completion | **Done** |
 | Result viewer supporting summary, detail and table formats | **Done** |
 | Export analysis results to JSON/PDF/CSV | **Done** |
+

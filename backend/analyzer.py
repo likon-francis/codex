@@ -1,7 +1,6 @@
 import os
 from io import BytesIO
 import requests
-
 from PyPDF2 import PdfReader
 from docx import Document as DocxDocument
 

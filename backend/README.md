@@ -14,6 +14,7 @@ This is a minimal FastAPI backend exposing placeholder endpoints for each module
   optional `analysis_type`). Pass `detect_type=true` to let the server guess the
   document type. `analysis_type` may be `cv` or `tender` to use default system
   prompts.
+
 - `/documents` - list analyzed documents
 - `/documents/{id}` - retrieve a single document
 - `/analysis-presets` - list available preset analysis types
