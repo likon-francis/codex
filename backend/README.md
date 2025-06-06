@@ -11,23 +11,25 @@ This is a minimal FastAPI backend exposing placeholder endpoints for each module
 - `/iot/mqtt/messages` – list received MQTT messages (`GET`)
 - `/visitors` – visitor registration (`GET`/`POST`)
 - `/analyze` - upload a document and return analysis (fields `file`, `prompt`,
-  optional `analysis_type`). `analysis_type` may be `cv` or `tender` to use
-  default system prompts.
+  optional `analysis_type`). Pass `detect_type=true` to let the server guess the
+  document type. `analysis_type` may be `cv` or `tender` to use default system
+  prompts.
+
 - `/documents` - list analyzed documents
 - `/documents/{id}` - retrieve a single document
 - `/analysis-presets` - list available preset analysis types
 - `/signup` - create a user account
 - `/me` - return the authenticated user
 
-
-The analyzer extracts text from PDF and Word documents using PyPDF2 and
-python-docx. Each stored record captures the filename, analysis type,
-prompt, result and the time the file was processed.
+The analyzer extracts text from PDF, Word and plain‑text documents using
+PyPDF2 and python-docx. Each stored record captures the filename,
+detected or supplied analysis type, prompt, result and the time the file was
+processed. When `detect_type=true` is supplied the server uses a few simple
+heuristics to guess whether a file is a CV, tender or other document.
 
 Authentication is handled with HTTP Basic credentials. Create an account via
 `/signup` and include your username and password when calling analyzer
 endpoints.
-
 
 ## Development
 

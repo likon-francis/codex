@@ -148,6 +148,14 @@ async def analyze_document(
         raise HTTPException(status_code=400, detail="Unsupported file type")
     data = await file.read()
     text = extract_text(data, file.filename)
+    if detect_type and not analysis_type:
+        lower_fn = file.filename.lower()
+        lower_text = text.lower()
+        if "cv" in lower_fn or "resume" in lower_fn or "curriculum" in lower_text:
+            analysis_type = "cv"
+        elif "tender" in lower_fn or "tender" in lower_text:
+            analysis_type = "tender"
+
     try:
         result = analyze_text(prompt, text, analysis_type or None)
     except Exception:

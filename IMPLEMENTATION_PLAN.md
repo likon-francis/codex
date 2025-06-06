@@ -22,3 +22,10 @@ item is marked with its current status.
 | Add tests for backend API and frontend components | **Done** |
 
 
+| Drag-and-drop file upload with multi-select and per-file status | **Done** |
+| Document type selector with optional auto-detection | **Done** |
+| Prompt template selection and Markdown editor | **Done** |
+| Status tracker displaying queue/analysis/completion | **Done** |
+| Result viewer supporting summary, detail and table formats | **Done** |
+| Export analysis results to JSON/PDF/CSV | **Done** |
+

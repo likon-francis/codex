@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+
+
 /**
  * Simple document analyzer portal. Allows selecting a backend URL,
  * uploading a document with an optional prompt and analysis type,
@@ -6,13 +8,15 @@ import React, { useState, useEffect } from 'react';
  */
 function App() {
   const [baseUrl, setBaseUrl] = useState('http://localhost:8000');
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]); // {file, status, result}
   const [prompt, setPrompt] = useState('');
   const [analysisType, setAnalysisType] = useState('');
-  const [result, setResult] = useState('');
+  const [autoType, setAutoType] = useState(false);
   const [loading, setLoading] = useState(false);
   const [documents, setDocuments] = useState([]);
   const [presets, setPresets] = useState([]);
+  const inputRef = useRef();
+
 
   const loadDocuments = async () => {
     try {
@@ -38,26 +42,39 @@ function App() {
     loadPresets();
   }, [baseUrl]);
 
+  const handleFiles = (list) => {
+    const arr = Array.from(list).map((f) => ({ file: f, status: 'queued', result: '' }));
+    setFiles(arr);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!file) return;
+    if (!files.length) return;
     setLoading(true);
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('prompt', prompt);
-    formData.append('analysis_type', analysisType);
-    try {
-      const res = await fetch(`${baseUrl}/analyze`, {
-        method: 'POST',
-        body: formData
-      });
-      const data = await res.json();
-      setResult(data.result || JSON.stringify(data));
-    } catch (err) {
-      setResult('Error contacting backend');
-    } finally {
-      setLoading(false);
+    const updated = [...files];
+    for (let i = 0; i < updated.length; i++) {
+      updated[i].status = 'analyzing';
+      setFiles([...updated]);
+      const formData = new FormData();
+      formData.append('file', updated[i].file);
+      formData.append('prompt', prompt);
+      formData.append('analysis_type', analysisType);
+      formData.append('detect_type', autoType);
+      try {
+        const res = await fetch(`${baseUrl}/analyze`, {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        updated[i].result = data.result || JSON.stringify(data);
+      } catch (err) {
+        updated[i].result = 'Error contacting backend';
+      }
+      updated[i].status = 'done';
+      setFiles([...updated]);
     }
+    setLoading(false);
+    loadDocuments();
   };
 
   return (
@@ -77,16 +94,40 @@ function App() {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '0.5rem' }}>
+        <div
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            handleFiles(e.dataTransfer.files);
+          }}
+          style={{ border: '2px dashed #ccc', padding: '1rem', marginBottom: '0.5rem', cursor: 'pointer' }}
+          onClick={() => inputRef.current && inputRef.current.click()}
+        >
+          <p>Drop files here or click to select</p>
           <input
+            ref={inputRef}
             type="file"
-            onChange={(e) => setFile(e.target.files[0])}
+            multiple
+            style={{ display: 'none' }}
+            onChange={(e) => handleFiles(e.target.files)}
           />
         </div>
+        {files.length > 0 && (
+          <ul>
+            {files.map((f, idx) => (
+              <li key={idx}>{f.file.name} - {f.status}</li>
+            ))}
+          </ul>
+        )}
         <div style={{ marginBottom: '0.5rem' }}>
           <select
             value={analysisType}
-            onChange={(e) => setAnalysisType(e.target.value)}
+            onChange={(e) => {
+              const val = e.target.value;
+              setAnalysisType(val);
+              const preset = presets.find((p) => p.type === val);
+              if (preset) setPrompt(preset.prompt);
+            }}
             style={{ width: '20rem' }}
           >
             <option value="">Select analysis type (optional)</option>
@@ -96,6 +137,15 @@ function App() {
               </option>
             ))}
           </select>
+          <label style={{ marginLeft: '0.5rem' }}>
+            <input
+              type="checkbox"
+              checked={autoType}
+              onChange={(e) => setAutoType(e.target.checked)}
+            />
+            Auto detect
+          </label>
+
         </div>
         <div style={{ marginBottom: '0.5rem' }}>
           <textarea
@@ -110,10 +160,26 @@ function App() {
       </form>
 
       {loading && <p>Analyzing...</p>}
-      {result && (
-        <div style={{ marginTop: '1rem', whiteSpace: 'pre-wrap' }}>
-          <h3>Result</h3>
-          <pre>{result}</pre>
+      {files.map((f, idx) => (
+        f.result && (
+          <div key={idx} style={{ marginTop: '1rem', whiteSpace: 'pre-wrap' }}>
+            <h3>Result for {f.file.name}</h3>
+            <pre>{f.result}</pre>
+          </div>
+        )
+      ))}
+      {files.some(f => f.result) && (
+        <div style={{ marginTop: '1rem' }}>
+          <button type="button" onClick={() => {
+            const data = files.map(f => ({ filename: f.file.name, result: f.result }));
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'results.json';
+            a.click();
+            URL.revokeObjectURL(url);
+          }}>Export JSON</button>
         </div>
       )}
 
